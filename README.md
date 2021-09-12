@@ -41,7 +41,7 @@ fun1 <- function(data) {
   pmax(data)
 }
 fun1(cars)
-#> Error: The refactored expression returns a different from the original one
+#> Error: The refactored expression returns a different value than the original one
 #> `original` is a double vector (4, 10, 7, 22, 16, ...)
 #> `refactored` is an S3 object of class <data.frame>, a list
 ```
@@ -73,8 +73,8 @@ fun3 <- function(data) {
 }
 fun3(cars2)
 #> Error: The refactored code ran slower than the original code
-#>   `original time (s)`: 0.0
-#> `refactored time (s)`: 0.2
+#>   `original time (s)`: 0.00
+#> `refactored time (s)`: 0.09
 ```
 
 ## Caveats

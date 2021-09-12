@@ -74,7 +74,7 @@ fun3 <- function(data) {
 fun3(cars2)
 #> Error: The refactored code ran slower than the original code
 #>   `original time (s)`: 0.0
-#> `refactored time (s)`: 0.1
+#> `refactored time (s)`: 0.2
 ```
 
 ## Caveats

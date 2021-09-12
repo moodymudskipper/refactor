@@ -22,7 +22,7 @@
   if(identical(original_value, refactored_value)) {
     return(refactored_value)
   }
-  stop("The refactored expression returns a different from the original one\n",
+  stop("The refactored expression returns a different value than the original one\n",
        waldo::compare(
          original_value, refactored_value, x_arg = "original", y_arg = "refactored"),
        call. = FALSE)
@@ -44,7 +44,7 @@
     }
     return(refactored_value)
   }
-  stop("The refactored expression returns a different from the original one\n",
+  stop("The refactored expression returns a different value than the original one\n",
        waldo::compare(
          original_value, refactored_value, x_arg = "original", y_arg = "refactored"),
        call. = FALSE)

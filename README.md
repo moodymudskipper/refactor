@@ -35,13 +35,15 @@ Here I intend to correct an inefficient use of the `apply()` function,
 but used `pmax` incorrectly:
 
 ``` r
-fun1 <- function() {
+fun1 <- function(data) {
   apply(data, 1, max)
 } %refactor% {
   pmax(data)
 }
 fun1(cars)
-#> Error in fun1(cars): unused argument (cars)
+#> Error: The refactored expression returns a different from the original one
+#> `original` is a double vector (4, 10, 7, 22, 16, ...)
+#> `refactored` is an S3 object of class <data.frame>, a list
 ```
 
 Now using it correctly:

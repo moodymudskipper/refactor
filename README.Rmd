@@ -45,7 +45,7 @@ Here I intend to correct an inefficient use of the `apply()` function,
 but used `pmax` incorrectly:
 
 ```{r, error=TRUE}
-fun1 <- function() {
+fun1 <- function(data) {
   apply(data, 1, max)
 } %refactor% {
   pmax(data)

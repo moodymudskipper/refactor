@@ -25,8 +25,8 @@ remotes::install_github("moodymudskipper/refactor")
 library(refactor)
 ```
 
-  - `%refactor%` is used to check that the output value is consistent
-  - `%refactor2%` also checks that the refactored version runs faster
+`%refactor%` by default checks that the output value is consistent
+between the original and refactored expressions.
 
 They’ll often be used on the body of a function but can be used on any
 expression.
@@ -41,7 +41,8 @@ fun1 <- function(data) {
   pmax(data)
 }
 fun1(cars)
-#> Error: The refactored expression returns a different value than the original one
+#> Error: The refactored expression returns a different value than the original one.
+#> 
 #> `original` is a double vector (4, 10, 7, 22, 16, ...)
 #> `refactored` is an S3 object of class <data.frame>, a list
 ```
@@ -60,30 +61,63 @@ fun2(cars)
 #> [39]  32  48  52  56  64  66  54  70  92  93 120  85
 ```
 
-Now let’s demonstrate `%refactor2%` by inverting the original and
-refactored code, and using bigger data so execution time differences are
-noticeable :
+We can use the option `refactor.env` to test that the local environment
+isn’t changed in different ways by the original and refactored
+expression.
 
 ``` r
+options("refactor.env" = TRUE)
+{
+  # original code
+  data <- cars
+  i <- 1
+  apply(data, i, max)
+} %refactor% {
+  # refactored code
+  do.call(pmax, cars)
+}
+#> Error: The original and refactored expressions operate different changes to the local environment.
+#> 
+#> `original` is length 4
+#> `refactored` is length 2
+#> 
+#> `names(original)`:   "i" "data" "fun1" "fun2"
+#> `names(refactored)`:            "fun1" "fun2"
+#> 
+#> `original$i` is a double vector (1)
+#> `refactored$i` is absent
+#> 
+#> `original$data` is an S3 object of class <data.frame>, a list
+#> `refactored$data` is absent
+```
+
+We can use the option `refactor.time` to test that the refactored
+solution is faster.
+
+``` r
+# use bigger data so execution time differences are noticeable
 cars2 <- do.call(rbind, replicate(1000,cars, F))
+
+options("refactor.time" = TRUE)
 fun3 <- function(data) {
   do.call(pmax, data)
-} %refactor2% {
+} %refactor% {
   apply(data, 1, max)
 }
 fun3(cars2)
-#> Error: The refactored code ran slower than the original code
+#> Error: The refactored code ran slower than the original code.
 #>   `original time (s)`: 0.00
-#> `refactored time (s)`: 0.09
+#> `refactored time (s)`: 0.08
 ```
 
 ## Caveats
 
-We don’t control that side effects are the same on both sides, this
-means the following for instance might be different in your refactored
-code and you won’t be warned about it :
+We don’t control that side effects are the same on both sides, with the
+exception of modifications to the local environment. This means the
+following for instance might be different in your refactored code and
+you won’t be warned about it :
 
-  - modified environments
+  - modified environments (other than local)
   - written files
   - printed output
   - messages

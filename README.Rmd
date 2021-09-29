@@ -36,8 +36,8 @@ remotes::install_github("moodymudskipper/refactor")
 library(refactor)
 ```
 
-* `%refactor%`  is used to check that the output value is consistent
-* `%refactor2%` also checks that the refactored version runs faster
+`%refactor%`  by default checks that the output value is consistent between
+the original and refactored expressions.
 
 They'll often be used on the body of a function but can be used on any expression.
 
@@ -64,14 +64,34 @@ fun2 <- function(data) {
 fun2(cars)
 ```
 
-Now let's demonstrate `%refactor2%` by inverting the original and refactored
-code, and using bigger data so execution time differences are noticeable :
+We can use the option `refactor.env` to test that the local environment isn't 
+changed in different ways by the original and refactored expression.
+
 
 ```{r, error=TRUE}
+options("refactor.env" = TRUE)
+{
+  # original code
+  data <- cars
+  i <- 1
+  apply(data, i, max)
+} %refactor% {
+  # refactored code
+  do.call(pmax, cars)
+}
+```
+
+We can use the option `refactor.time` to test that the refactored solution is
+faster.
+
+```{r, error=TRUE}
+# use bigger data so execution time differences are noticeable
 cars2 <- do.call(rbind, replicate(1000,cars, F))
+
+options("refactor.time" = TRUE)
 fun3 <- function(data) {
   do.call(pmax, data)
-} %refactor2% {
+} %refactor% {
   apply(data, 1, max)
 }
 fun3(cars2)
@@ -80,11 +100,12 @@ fun3(cars2)
 
 ## Caveats
 
-We don't control that side effects are the same on both sides, this means
+We don't control that side effects are the same on both sides, with the exception
+of modifications to the local environment. This means
 the following for instance might be different in your refactored code 
 and you won't be warned about it :
 
-* modified environments
+* modified environments (other than local)
 * written files
 * printed output
 * messages

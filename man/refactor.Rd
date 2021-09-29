@@ -3,12 +3,15 @@
 \name{refactor}
 \alias{refactor}
 \alias{\%refactor\%}
-\alias{\%refactor2\%}
+\alias{\%ignore_original\%}
+\alias{\%ignore_refactored\%}
 \title{Refactor Code}
 \usage{
 original \%refactor\% refactored
 
-original \%refactor2\% refactored
+original \%ignore_original\% refactored
+
+original \%ignore_refactored\% refactored
 }
 \arguments{
 \item{original}{original expression}
@@ -16,14 +19,26 @@ original \%refactor2\% refactored
 \item{refactored}{refactored expression}
 }
 \description{
-Both original and refactored expressions are run. The function will fail if
-the outputs are different. \verb{\%refactor2\%} will also fail if the refactored
-expression runs slower.
+Both original and refactored expressions are run. By default the function will fail if
+the outputs are different. \verb{\%ignore_original\%} and \verb{\%ignore_refactored\%} do as
+heir names suggest.
 }
-\examples{
-{
-apply(cars, 1, max)
-} \%refactor\% {
-  do.call(pmax, cars)
+\details{
+Options can be set to alter the behavior:
+\itemize{
+\item if \code{refactor.value} is \code{TRUE} (the default), the sameness of the outputs of
+\code{original} and \code{refactored} is tested
+\item if \code{refactor.env} is \code{TRUE} (default is \code{FALSE}), the sameness of the modifications
+to the local environment made by \code{original} and \code{refactored} is tested
+\item if \code{refactor.time} is \code{TRUE} (default is \code{FALSE}), the improved execution speed of
+the refactored solution is tested
+\item if \code{refactor.waldo} is \code{TRUE} (the default), the \code{waldo::compare} will be used
+to compare objects or environments in case of failure. 'waldo' is sometimes
+slow and if we set this option to \code{FALSE}, \code{dplyr::all_equal()} would be used instead.
+
+\verb{\%ignore_original\%} and \verb{\%ignore_refactored\%} are useful when original and
+refactored code give different results (possibly because one of them is wrong)
+and we want to keep both codes around without tedious commening/uncommenting.
+heir names suggest and are used to avoid tedious commenting/uncommenting
 }
 }

@@ -1,7 +1,8 @@
 #' Refactor Code
 #'
 #' Both original and refactored expressions are run. By default the function will fail if
-#' the outputs are different.
+#' the outputs are different. `%ignore_original%` and `%ignore_refactored%` do as
+#' heir names suggest.
 #'
 #' Options can be set to alter the behavior:
 #'
@@ -11,6 +12,14 @@
 #'   to the local environment made by `original` and `refactored` is tested
 #' * if `refactor.time` is `TRUE` (default is `FALSE`), the improved execution speed of
 #'   the refactored solution is tested
+#' * if `refactor.waldo` is `TRUE` (the default), the `waldo::compare` will be used
+#'   to compare objects or environments in case of failure. 'waldo' is sometimes
+#'   slow and if we set this option to `FALSE`, `dplyr::all_equal()` would be used instead.
+#'
+#'   `%ignore_original%` and `%ignore_refactored%` are useful when original and
+#'   refactored code give different results (possibly because one of them is wrong)
+#'   and we want to keep both codes around without tedious commening/uncommenting.
+#' heir names suggest and are used to avoid tedious commenting/uncommenting
 #'
 #' @param original original expression
 #' @param refactored refactored expression
@@ -21,6 +30,7 @@
   refactor.value <- getOption("refactor.value")
   refactor.time <- getOption("refactor.time")
   refactor.env <- getOption("refactor.env")
+  refactor.waldo <- getOption("refactor.waldo")
 
   ## capture expressions and env
   original          <- substitute(original)
@@ -59,17 +69,23 @@
 
   if(refactor.value && !identical(original_value, refactored_value)) {
     stop("The refactored expression returns a different value than the original one.\n\n",
-         paste(waldo::compare(
+         if(refactor.waldo)
+           paste(waldo::compare(
            original_value, refactored_value, x_arg = "original", y_arg = "refactored"),
-           collapse = "\n\n"),
+           collapse = "\n\n")
+         else
+           paste(all.equal(original_value, refactored_value), collapse = "\n\n"),
          call. = FALSE)
   }
 
   if(refactor.env && !identical(new_env1_as_list, new_env2_as_list)) {
     stop("The original and refactored expressions operate different changes to the local environment.\n\n",
+         if(refactor.waldo)
          paste(waldo::compare(
            new_env1_as_list, new_env2_as_list, x_arg = "original", y_arg = "refactored"),
-           collapse = "\n\n"),
+           collapse = "\n\n")
+         else
+           paste(all.equal(new_env1_as_list, new_env2_as_list), collapse = "\n\n"),
          call. = FALSE)
   }
 
@@ -85,26 +101,16 @@
 
 #' @export
 #' @rdname refactor
-`%refactor2%` <- function(original, refactored) {
-  original          <- substitute(original)
-  refactored        <- substitute(refactored)
-  original_time     <- system.time(original_value   <- eval.parent(original))[["elapsed"]]
-  refactored_time   <- system.time(refactored_value <- eval.parent(refactored))[["elapsed"]]
-  if(identical(original_value, refactored_value)) {
-    if(refactored_time > original_time) {
-      stop("The refactored code ran slower than the original code.\n",
-           paste(waldo::compare(
-             original_time, refactored_time, x_arg = "original time (s)", y_arg = "refactored time (s)"),
-             collapse = "\n\n"),
-           call. = FALSE)
-    }
-    return(refactored_value)
-  }
-  stop("The refactored expression returns a different value than the original one.\n",
-       paste(waldo::compare(
-         original_value, refactored_value, x_arg = "original", y_arg = "refactored"),
-         collapse = "\n\n"),
-       call. = FALSE)
+`%ignore_original%` <- function(original, refactored) {
+  refactored <- substitute(refactored)
+  eval.parent(refactored)
+}
+
+#' @export
+#' @rdname refactor
+`%ignore_refactored%` <- function(original, refactored) {
+  refactored <- substitute(original)
+  eval.parent(original)
 }
 
 

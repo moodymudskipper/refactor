@@ -20,11 +20,12 @@ use_lintr_template_on_file <- function(path = NULL) {
 }
 
 #' @rdname use_lintr_template_on_file
+#' @export
 use_lintr_template_on_dir <- function(path = NULL) {
-  if (is.null(path)) path <- rstudioapi::documentPath(rstudioapi::documentId(FALSE))
-  path
+  if (is.null(path)) path <- here::here()
   template_path <- system.file("lint_dir_template.R", package = "refactor")
   lines <- readLines(template_path)
+  lines[[3]] <- sprintf('linted_dir <- "%s"', path)
   rstudioapi::documentNew(lines)
   invisible(NULL)
 }

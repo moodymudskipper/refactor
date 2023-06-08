@@ -15,12 +15,17 @@ knitr::opts_chunk$set(
 
 # refactor
 
-Refactoring code can be a bit scary, what if we mess something up and end up
-with a different output or slower code?
+{refactor} helps you test your refactored code with real live data. It's
+a complement to unit tests, useful in the dirtier stage of refactoring,
+when we're not quite sure if our unit tests are good enough or if we don't want to
+write them yet because there are too many things changing.
 
-Hopefully no more! {refactor} lets you run both the original and refactored 
+{refactor} lets you run both the original and refactored 
 version of your code and checks whether the output is the same and if it runs
-as fast. Then when you're comfortable with your work you can remove the original version.
+as fast. 
+
+As you encounter failures you might improve your unit tests, and
+when you're comfortable with your work you can remove the original version
 
 ## Installation
 
@@ -100,6 +105,8 @@ fun3(cars2)
 
 ## Other functions
 
+It's often easier to use the functions below:
+
 * `%refactor_chunk%` behaves like `%refactor%` with `options(refactor.value = FALSE, refactor.env = TRUE, refactor.time = FALSE)`,
   it's convenient to refactor chunks of code that modify the local environment.
 * `%refactor_value%` behaves like `%refactor%` with `options(refactor.value = TRUE, refactor.env = FALSE, refactor.time = FALSE)`,
@@ -111,6 +118,10 @@ fun3(cars2)
 * `%ignore_original%` and `%ignore_refactored%` are useful when original and
   refactored code give different results (possibly because one of them is wrong)
   and we want to keep both codes around without commenting.
+  
+## Additional functions
+
+We provide a few helper for refactoring tasks, check out the doc!
 
 ## Caveats
 

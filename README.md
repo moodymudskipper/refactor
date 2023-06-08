@@ -3,13 +3,16 @@
 
 # refactor
 
-Refactoring code can be a bit scary, what if we mess something up and
-end up with a different output or slower code?
+{refactor} helps you test your refactored code with real live data. It’s
+a complement to unit tests, useful in the dirtier stage of refactoring,
+when we’re not quite sure if our unit tests are good enough or if we
+don’t want to write them yet because there are too many things changing.
 
-Hopefully no more! {refactor} lets you run both the original and
-refactored version of your code and checks whether the output is the
-same and if it runs as fast. Then when you’re comfortable with your work
-you can remove the original version.
+{refactor} lets you run both the original and refactored version of your
+code and checks whether the output is the same and if it runs as fast.
+
+As you encounter failures you might improve your unit tests, and when
+you’re comfortable with your work you can remove the original version
 
 ## Installation
 
@@ -41,7 +44,7 @@ fun1 <- function(data) {
   pmax(data)
 }
 fun1(cars)
-#> Error: The refactored expression returns a different value than the original one.
+#> Error: The refactored expression returns a different value from the original one.
 #> 
 #> `original` is a double vector (4, 10, 7, 22, 16, ...)
 #> `refactored` is an S3 object of class <data.frame>, a list
@@ -97,32 +100,38 @@ fun3 <- function(data) {
 }
 fun3(cars2)
 #> Error: The refactored code ran slower than the original code.
-#>   `original time (s)`: 0.0
-#> `refactored time (s)`: 0.1
+#>   `original time (s)`: 0.00
+#> `refactored time (s)`: 0.03
 ```
 
 ## Other functions
 
--   `%refactor_chunk%` behaves like `%refactor%` with
-    `options(refactor.value = FALSE, refactor.env = TRUE, refactor.time = FALSE)`,
-    it’s convenient to refactor chunks of code that modify the local
-    environment.
--   `%refactor_value%` behaves like `%refactor%` with
-    `options(refactor.value = TRUE, refactor.env = FALSE, refactor.time = FALSE)`,
-    it’s convenient to refactor the body of a function that returns a
-    useful value.
--   `%refactor_chunk_and_value%` behaves like `%refactor%` with
-    `options(refactor.value = TRUE, refactor.env = TRUE, refactor.time = FALSE)`,
-    it’s convenient to refactor the body of a function that returns a
-    closure.
--   `%refactor_chunk_efficiently%`, `%refactor_value_efficiently%` and
-    `%refactor_chunk_and_value_efficiently%` are variants of the above
-    which also check the improved execution speed of the refactored
-    solution
--   `%ignore_original%` and `%ignore_refactored%` are useful when
-    original and refactored code give different results (possibly
-    because one of them is wrong) and we want to keep both codes around
-    without commenting.
+It’s often easier to use the functions below:
+
+- `%refactor_chunk%` behaves like `%refactor%` with
+  `options(refactor.value = FALSE, refactor.env = TRUE, refactor.time = FALSE)`,
+  it’s convenient to refactor chunks of code that modify the local
+  environment.
+- `%refactor_value%` behaves like `%refactor%` with
+  `options(refactor.value = TRUE, refactor.env = FALSE, refactor.time = FALSE)`,
+  it’s convenient to refactor the body of a function that returns a
+  useful value.
+- `%refactor_chunk_and_value%` behaves like `%refactor%` with
+  `options(refactor.value = TRUE, refactor.env = TRUE, refactor.time = FALSE)`,
+  it’s convenient to refactor the body of a function that returns a
+  closure.
+- `%refactor_chunk_efficiently%`, `%refactor_value_efficiently%` and
+  `%refactor_chunk_and_value_efficiently%` are variants of the above
+  which also check the improved execution speed of the refactored
+  solution
+- `%ignore_original%` and `%ignore_refactored%` are useful when original
+  and refactored code give different results (possibly because one of
+  them is wrong) and we want to keep both codes around without
+  commenting.
+
+## Additional functions
+
+We provide a few helper for refactoring tasks, check out the doc!
 
 ## Caveats
 
@@ -131,12 +140,12 @@ exception of modifications to the local environment. This means the
 following for instance might be different in your refactored code and
 you won’t be warned about it :
 
--   modified environments (other than local)
--   written files
--   printed output
--   messages
--   warnings
--   errors
+- modified environments (other than local)
+- written files
+- printed output
+- messages
+- warnings
+- errors
 
 We might be able to support some of those though.
 

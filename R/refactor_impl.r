@@ -41,7 +41,7 @@ refactor_impl <- function(original, refactored, refactor.value, refactor.time, r
   new_env2   <- clone_env(src_env)
 
   if(refactor.value && !identical2(original_value, refactored_value)) {
-    stop("The refactored expression returns a different value than the original one.\n\n",
+    stop("The refactored expression returns a different value from the original one.\n\n",
          if(refactor.waldo)
            paste(waldo::compare(
              original_value, refactored_value, x_arg = "original", y_arg = "refactored"),

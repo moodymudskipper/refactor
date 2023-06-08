@@ -3,7 +3,7 @@
 \name{use_lintr_template_on_file}
 \alias{use_lintr_template_on_file}
 \alias{use_lintr_template_on_dir}
-\title{Use lintr temmplate}
+\title{Use lintr template}
 \usage{
 use_lintr_template_on_file(path = NULL)
 

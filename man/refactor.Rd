@@ -80,7 +80,6 @@ and refactored code have different behaviors.
 \itemize{
 \item \verb{\%ignore_original\%} and \verb{\%ignore_refactored\%} are useful when original and
 refactored code give different results (possibly because one of them is wrong)
-and we want to keep both codes around without tedious commening/uncommenting.
-heir names suggest and are used to avoid tedious commenting/uncommenting
+and we want to keep both codes around without commenting.
 }
 }
